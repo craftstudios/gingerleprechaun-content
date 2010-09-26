@@ -1,0 +1,131 @@
+date: 2010-09-25 21:12:53 +1200
+categories: ruby
+read more: Read more
+summary: setting up a ruby stack on ubuntu
+
+
+# Setting up a ruby stack on ubuntu
+=================================
+
+Set the PATH
+------------
+
+Using the editor of your choice, create or edit a file in your home directory named .profile
+
+To the end of this file, add the following line:
+
+	export PATH="/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:$PATH"
+
+Close and save the file and run this command to load the new setting into your current shell:
+
+	source ~/.profile
+	
+To verify that you've updated your path, enter the following command:
+
+	echo $PATH
+		
+You should see `/usr/local/bin` at the beginning of the line returned by the system.
+
+
+install ruby
+------------
+
+As a prerequisite you will need to install the following packages,these packages are build tools and libraries you will need for compilation process.
+
+	sudo apt-get -y install libc6-dev libssl-dev libmysql++-dev libsqlite3-dev make build-essential libssl-dev libreadline5-dev zlib1g-dev
+
+Then install ruby. Latest version was 1.9.2 at time of writing.
+
+	cd ~
+	mkdir src
+	cd src/
+	wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p0.tar.gz
+	tar xzvf ruby-1.9.2-p0.tar.gz
+	cd ruby-1.9.2-p0/
+	./configure --prefix=/usr/local
+	make
+	sudo make install
+	
+To verify that Ruby is installed and in your path, just type:
+
+	which ruby
+
+You should see:
+
+	/usr/local/bin/ruby
+	
+Ruby 1.9 bundles rubygems so there is no need to install it.
+
+install passenger
+-----------------
+
+Passenger allows you to serve up ruby apps through apache.
+
+Open a terminal, and type:
+
+	sudo gem install passenger
+
+Type:
+
+	sudo passenger-install-apache2-module
+	
+The ubuntu way... paste into mods-available. Then enable.
+
+Edit the /etc/apache2/httpd.conf or /etc/apache2/apache2.conf file (depending on how your server is setup, use one or the other but not both) by adding the following to the end of the file:
+
+    * LoadModule passenger_module /usr/lib/ruby/gems/1.8/gems/passenger-2.0.6/ext/apache2/mod_passenger.so
+    * PassengerRoot /usr/lib/ruby/gems/1.8/gems/passenger-2.0.6
+    * PassengerRuby /usr/bin/ruby1.8
+    * PassengerDefaultUser www-data !!!! read the passenger security pages
+
+NOTE: Be mindful of the Phusion Passenger version as you might need to adjust the version numbers for your particular release. Otherwise, just use the notes provided for you during the Phusion Passenger install.
+
+Finally, execute the the following commands from the command line:
+
+   1. sudo usermod -a -G www-data <your user login>
+   2. sudo a2enmod ssl
+
+The first command ensures the default www-data user group is group to your primary user account owning the server files. Otherwise, Phusion Passenger will assume to run the Rails app as root which might cause problems. The last command tells Apache to enable SSL support (you might or might not want this).
+	
+configure apache virtual host
+-----------------------------
+
+In sites available...
+
+	# Domian: keeny.co.uk
+	# public /home/keeny/public_html/keeny.co.uk
+
+	<VirtualHost *:80>
+
+		ServerAdmin webmaster@keeny.co.uk
+		ServerName keeny.co.uk
+		ServerAlias www.keeny.co.uk
+
+		DirectoryIndex index.html
+		DocumentRoot /home/keeny/public_html/keeny.co.uk/public/public
+
+		<Directory /somewhere/public>
+			AllowOverride all 
+			Options -MultiViews
+		</Directory>
+
+		# Possible values include: debug, info, notice, warn, error, crit,
+		# alert, emerg.
+		LogLevel warn
+		ErrorLog /home/keeny/public_html/keeny.co.uk/log/error.log
+		CustomLog /home/keeny/public_html/keeny.co.uk/log/access.log combined
+
+	</VirtualHost>
+
+Then do the symlink thing
+
+	sudo /etc/init.d/apache2 reload
+
+
+	
+	
+References
+http://amerj.info/2009/03/19/howto-install-rails-23-and-ruby-19-on-ubuntu-for-mysql-and-sqlite3/
+http://hivelogic.com/articles/compiling-ruby-rubygems-and-rails-on-snow-leopard
+https://articles.slicehost.com/2008/12/11/ubuntu-intrepid-apache-config-layout
+http://www.aeonscope.net/2009/03/15/phusion-passenger-on-ubuntu/
