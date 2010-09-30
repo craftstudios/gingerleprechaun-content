@@ -1,3 +1,4 @@
-h1. nesta
+# Nesta
+=======
 
 nesta is a lightweight blogging engine in sinatra

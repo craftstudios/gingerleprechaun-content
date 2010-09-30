@@ -1,2 +1,5 @@
-nesta
-ruby
+Nesta
+Ruby
+Rails
+OSX
+SysAdmin
