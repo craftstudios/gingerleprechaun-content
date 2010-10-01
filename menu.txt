@@ -1,5 +1,5 @@
-Nesta
-Ruby
-Rails
-OSX
-SysAdmin
+nesta
+ruby
+rails
+osx
+sysadmin
