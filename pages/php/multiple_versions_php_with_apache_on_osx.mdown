@@ -1,0 +1,63 @@
+date: Date: Date: 2010-09-29 17:05:07 +1200
+read more: Read more on my move to Google Apps
+summary: Recently I got mighty peeved off at how clunky and bloated my hosts webmail system was. And why should I be paying them for hosted email when I can get Google-class email hosting for free with Google Apps?
+
+# Serving multiple versions of PHP with Apache on OSX
+=====================================================
+
+Initial Steps
+
+I tried the entropy package but it doesn't come with php-cgi, I couldn't get it to work and it wrote a symlink into my apache conf/other directory which causes SegFaults in apache whenever I tried to unload the PHP module. If in doubt - stick to the source.
+
+First, get the most recent source code of PHP. There may be a later version since the time of this publication. Download the file to a convenient directory. (I’ve created a directory called /apps for PHP and other UNIX applications I need to install.) Decompress the downloaded file with the following commands:
+
+	shell> gunzip php-4.3.4.tar.gz
+	shell> tar xf php-4.3.4.tar
+
+You’ll now have a directory called /apps/php-4.3.4.
+
+As you add more modules to your installation, you’ll also need more flags in the ./configure command. For example, if you followed Apple Internet Developer’s instructions for installing MySQL or PostgreSQL, you could add either of the following flags to ./configure to make PHP aware of your preferred database:
+
+	shell> ./configure --with-mysql=/usr/local/mysql \
+	--with-pgsql=/usr/local
+
+(Note that PHP assumes most libraries will be in /usr/local. In the above command, I had to make PHP aware that MySQL was not installed in the default directory.)
+
+./configure --prefix=/usr/local/php5.2.14 --with-config-file-path=/usr/local/php5.2.14 --with-mysqli=/usr/local/mysql/bin/mysql_config --with-mysql=/usr/local/mysql --with-curl --enable-cli --enable-fastcgi --enable-discard-path --enable-force-cgi-redirect
+
+this assumes you have mysql installed in usr/local if not follow the hivelogic instructions
+
+make
+make test
+sudo make install
+
+<VirtualHost *:80>
+    ServerAdmin me@keeny.co.uk
+    DocumentRoot /Library/WebServer/Documents/testphp/public
+    ServerName testphp.dev
+    ServerAlias www.testphp.dev
+    ErrorLog /Library/WebServer/Documents/testphp/public/log/apache_error_log
+    CustomLog /Library/WebServer/Documents/testphp/public/log/apache_access_log common
+
+    # apache 2.2 denies access to the php-cgi executable, unless it is explicitly granted
+	<Directory /usr/local/php5.2.14/bin>
+		<Files php-cgi>
+	        Allow from all
+	      </Files>	
+	</Directory>
+	# required to access content which is not directly under the DocumentRoot
+	    ScriptAlias /php52 /usr/local/php5.2.14
+	# it would be handy to use php_value directives, but CGI versions of php will not grok them, so we rely on different php.ini
+	# SetEnv PHPRC /php52
+	# Add PHP 5 parsing (via CGI) handler and action
+	AddHandler application/x-httpd-php52 .php
+	Action application/x-httpd-php52 /php52/bin/php-cgi
+    
+</VirtualHost>
+
+References:
+
+[PHP on Mac OS X](http://developer.apple.com/internet/opensource/php.html)
+[Multiple PHP versions with Apache using FastCGI on OS X](http://cuadradevelopment.com/blog/26/multiple-php-versions-with-apache-using-fastcgi-on-os-x/)
+(http://gggeek.altervista.org/2007/07/21/running-multiple-php-versions-on-a-single-apache-install/)
+
