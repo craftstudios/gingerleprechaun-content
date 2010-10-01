@@ -1,63 +1,99 @@
 date: Date: Date: 2010-09-29 17:05:07 +1200
-read more: Read more on my move to Google Apps
+read more: Read more on serving multiple versions of PHP
 summary: Recently I got mighty peeved off at how clunky and bloated my hosts webmail system was. And why should I be paying them for hosted email when I can get Google-class email hosting for free with Google Apps?
 
 # Serving multiple versions of PHP with Apache on OSX
 =====================================================
 
-Initial Steps
+I need to be able to test sites in PHP5.2 _and_ PHP5.3. You can only have one version of PHP loaded as an apache module, all the others have to use `php-cgi`
 
-I tried the entropy package but it doesn't come with php-cgi, I couldn't get it to work and it wrote a symlink into my apache conf/other directory which causes SegFaults in apache whenever I tried to unload the PHP module. If in doubt - stick to the source.
+I already had PHP5.3 installed as an apache module on my development system (Snow Leopard), so I built and added 5.2 using cgi as follows.
 
-First, get the most recent source code of PHP. There may be a later version since the time of this publication. Download the file to a convenient directory. (I’ve created a directory called /apps for PHP and other UNIX applications I need to install.) Decompress the downloaded file with the following commands:
+> I tried installing the [entropy package](http://www.entropy.ch/software/macosx/php/) in it's own directory but it doesn't come with php-cgi, I couldn't get it to work, and it wrote a symlink into my apache `conf/other` directory which caused SegFaults in apache whenever I tried to unload the PHP module. Moral of the story? If in doubt - use the source.
 
-	shell> gunzip php-4.3.4.tar.gz
-	shell> tar xf php-4.3.4.tar
+Install PHP into it's own directory
+-----------------------------------
 
-You’ll now have a directory called /apps/php-4.3.4.
+First, get the source for the [version PHP you need](http://php.net/downloads.php). Decompress with the following commands:
 
-As you add more modules to your installation, you’ll also need more flags in the ./configure command. For example, if you followed Apple Internet Developer’s instructions for installing MySQL or PostgreSQL, you could add either of the following flags to ./configure to make PHP aware of your preferred database:
+	> gunzip php-5.2.14.tar.gz
+	> tar xf php-5.2.14.tar
 
-	shell> ./configure --with-mysql=/usr/local/mysql \
-	--with-pgsql=/usr/local
+You’ll now have a directory called /php-5.2.14.
 
-(Note that PHP assumes most libraries will be in /usr/local. In the above command, I had to make PHP aware that MySQL was not installed in the default directory.)
+As you add more modules to your installation, you’ll also need more flags to the ./configure command. This is what I used:
 
-./configure --prefix=/usr/local/php5.2.14 --with-config-file-path=/usr/local/php5.2.14 --with-mysqli=/usr/local/mysql/bin/mysql_config --with-mysql=/usr/local/mysql --with-curl --enable-cli --enable-fastcgi --enable-discard-path --enable-force-cgi-redirect
+	> ./configure --prefix=/usr/local/php5.2.14 --with-config-file-path=/usr/local/php5.2.14 --with-mysqli=/usr/local/mysql/bin/mysql_config --with-mysql=/usr/local/mysql --with-curl --enable-cli --enable-fastcgi --enable-discard-path --enable-force-cgi-redirect
 
-this assumes you have mysql installed in usr/local if not follow the hivelogic instructions
+Note the `--prefix` flag installs php into it's own directory leaving your existing install untouched. Don't use the `--with-apxs` flag - we don't want to install as an apache module.
 
-make
-make test
-sudo make install
+Also note the mysql flags. This assumes you have mysql installed in `usr/local`. If not, adjust for your system or follow the [hivelogic instructions to install mysql](http://hivelogic.com/articles/compiling-mysql-on-snow-leopard) in `/usr/local`.
 
-<VirtualHost *:80>
-    ServerAdmin me@keeny.co.uk
-    DocumentRoot /Library/WebServer/Documents/testphp/public
-    ServerName testphp.dev
-    ServerAlias www.testphp.dev
-    ErrorLog /Library/WebServer/Documents/testphp/public/log/apache_error_log
-    CustomLog /Library/WebServer/Documents/testphp/public/log/apache_access_log common
+So anyway... once configured do:
 
-    # apache 2.2 denies access to the php-cgi executable, unless it is explicitly granted
-	<Directory /usr/local/php5.2.14/bin>
-		<Files php-cgi>
-	        Allow from all
-	      </Files>	
-	</Directory>
-	# required to access content which is not directly under the DocumentRoot
-	    ScriptAlias /php52 /usr/local/php5.2.14
-	# it would be handy to use php_value directives, but CGI versions of php will not grok them, so we rely on different php.ini
-	# SetEnv PHPRC /php52
-	# Add PHP 5 parsing (via CGI) handler and action
-	AddHandler application/x-httpd-php52 .php
-	Action application/x-httpd-php52 /php52/bin/php-cgi
-    
-</VirtualHost>
+	> make
+	> make test
+	> sudo make install
+	
+Okay so now now we have PHP safely installed in `/usr/local/php5.2.14` away from your existing PHP install :-)
 
-References:
+Configure Virtual Hosts for the version of PHP you require
+----------------------------------------------------------
 
-[PHP on Mac OS X](http://developer.apple.com/internet/opensource/php.html)
-[Multiple PHP versions with Apache using FastCGI on OS X](http://cuadradevelopment.com/blog/26/multiple-php-versions-with-apache-using-fastcgi-on-os-x/)
-(http://gggeek.altervista.org/2007/07/21/running-multiple-php-versions-on-a-single-apache-install/)
+I made a quick folder in my `DocumentRoot` in order to test my setup. Add a single file, `index.php` which contains:
+
+	<?php
+		phpinfo();
+	?>
+	
+Then set up your virtual host for the test file:
+
+	<VirtualHost *:80>
+	    ServerAdmin me@my_domain.co.uk
+	    DocumentRoot /Library/WebServer/Documents/testphp/public
+	    ServerName testphp.dev
+	    ServerAlias www.testphp.dev
+	    ErrorLog /Library/WebServer/Documents/testphp/public/log/apache_error_log
+	    CustomLog /Library/WebServer/Documents/testphp/public/log/apache_access_log common
+	</VirtualHost>
+	
+And restart apache
+
+	sudo apachectl graceful
+	
+I already had PHP5.3 running as an apache module, so visiting `www.testphp.dev` in a browser gives a nice big 5.3 output. Great :-)
+
+To switch to 5.2 simply modify your virtual host to use `php-cgi` as follows:
+
+	<VirtualHost *:80>
+	    ServerAdmin me@my_domain.co.uk
+	    DocumentRoot /Library/WebServer/Documents/testphp/public
+	    ServerName testphp.dev
+	    ServerAlias www.testphp.dev
+	    ErrorLog /Library/WebServer/Documents/testphp/public/log/apache_error_log
+	    CustomLog /Library/WebServer/Documents/testphp/public/log/apache_access_log common
+
+	    # apache 2.2 denies access to the php-cgi executable, unless it is explicitly granted
+		<Directory /usr/local/php5.2.14/bin>
+			<Files php-cgi>
+				Allow from all
+			</Files>	
+		</Directory>
+		# required to access content which is not directly under the DocumentRoot
+		ScriptAlias /php52 /usr/local/php5.2.14
+		# it would be handy to use php_value directives, but CGI versions of php will not grok them, so we rely on different php.ini
+		# SetEnv PHPRC /php52
+		# Add PHP 5 parsing (via CGI) handler and action
+		AddHandler application/x-httpd-php52 .php
+		Action application/x-httpd-php52 /php52/bin/php-cgi
+	</VirtualHost>
+
+And of course, restart apache.
+
+Now you can choose which sites run on PHP5.2 or PHP5.3 simply by modifying their virtual host entries.
+
+> References:  
+> [PHP on Mac OS X](http://developer.apple.com/internet/opensource/php.html)  
+> [Multiple PHP versions with Apache using FastCGI on OS X](http://cuadradevelopment.com/blog/26/multiple-php-versions-with-apache-using-fastcgi-on-os-x/)  
+> [Running multiple php versions on a single Apache install](http://gggeek.altervista.org/2007/07/21/running-multiple-php-versions-on-a-single-apache-install/)
 
