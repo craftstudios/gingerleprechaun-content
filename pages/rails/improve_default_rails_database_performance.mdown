@@ -1,5 +1,5 @@
 date: Date: 2007-03-23 15:40:08 +1200
-categories: Rails
+categories: rails
 read more: Read more
 summary: Active Record (AR) is slow. All that nice reflection comes at a price. You should use AR to prototype your app, then take a look at the logs to see where SQL can be tweaked.
 

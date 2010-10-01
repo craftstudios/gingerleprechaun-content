@@ -1,5 +1,5 @@
 date: Date: 2007-03-22 10:11:08 +1200
-categories: Rails
+categories: rails
 read more: Read more on Named Callbacks
 summary: Coming from a Java background I often find myself wanting to override constructors and other hooks. Using named callbacks better conveys your intention, making your code more readable.
 

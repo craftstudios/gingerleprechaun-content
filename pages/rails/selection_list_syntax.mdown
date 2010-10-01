@@ -1,5 +1,5 @@
 date: Date: 2007-03-21 13:02:08 +1200
-categories: Rails
+categories: rails
 read more: Read more
 summary: I don't think the explanation of 'selection lists' in Agile Web Development with Rails(1st ed) is very clear.
 
