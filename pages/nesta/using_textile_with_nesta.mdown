@@ -4,7 +4,6 @@ read more: Read more
 summary: It's simple: A post with `*.mdown` extension will use markdown, while `*.textile` will use textile.
 
 # Using textile with Nesta
-==========================
 
 Nesta comes with support for both Mardown and Textile but I was a bit confused how to use textile since the sample posts are all mardown.
 

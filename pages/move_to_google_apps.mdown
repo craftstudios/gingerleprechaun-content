@@ -3,7 +3,6 @@ read more: Read more on my move to Google Apps
 summary: Recently I got mighty peeved off at how clunky and bloated my hosts webmail system was. And why should I be paying them for hosted email when I can get Google-class email hosting for free with Google Apps?
 
 # Move to Google Apps
-=====================
 
 I'm not a fan of webmail - preferring to use a desktop client where possible, but sometimes you just need to access your mail on the road.
 

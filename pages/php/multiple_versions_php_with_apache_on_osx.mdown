@@ -9,7 +9,7 @@ I need to be able to test sites in PHP5.2 _and_ PHP5.3. You can only have one ve
 
 I already had PHP5.3 installed as an apache module on my development system (Snow Leopard), so I built and added 5.2 using cgi as follows.
 
-__The HTTP Authentication hooks in PHP are only available when it is running as an Apache module and is hence not available in the CGI version.__
+Possible gotcha: __The HTTP Authentication hooks in PHP are only available when it is running as an Apache module and is hence not available in the CGI version.__ And [workaround](http://theserverpages.com/php/manual/en/features.http-auth.php).
 
 > I tried installing the [entropy package](http://www.entropy.ch/software/macosx/php/) in it's own directory but it doesn't come with php-cgi, I couldn't get it to work, and it wrote a symlink into my apache `conf/other` directory which caused SegFaults in apache whenever I tried to unload the PHP module. Moral of the story? If in doubt - use the source.
 
@@ -25,12 +25,12 @@ You’ll now have a directory called /php-5.2.14.
 
 As you add more modules to your installation, you’ll also need more flags to the ./configure command. This is what I needed:
 
-	- curl
-	- cli
-	- fastcgi
-	- zlib
-	- mysql
-	- pdo-mysql driver	
+- curl
+- cli
+- fastcgi
+- zlib
+- mysql
+- pdo-mysql driver	
 
 And this is the command I used:
 
@@ -106,6 +106,6 @@ Now you can choose which sites run on PHP5.2 or PHP5.3 simply by modifying their
 > References:  
 > [PHP on Mac OS X](http://developer.apple.com/internet/opensource/php.html)  
 > [Multiple PHP versions with Apache using FastCGI on OS X](http://cuadradevelopment.com/blog/26/multiple-php-versions-with-apache-using-fastcgi-on-os-x/)  
-> [Running multiple php versions on a single Apache install](http://gggeek.altervista.org/2007/07/21/running-multiple-php-versions-on-a-single-apache-install/)
-http://www.malisphoto.com/tips/php-on-os-x.html#Anchor-Introduction
+> [Running multiple php versions on a single Apache install](http://gggeek.altervista.org/2007/07/21/running-multiple-php-versions-on-a-single-apache-install/)  
+> [Enabling, Compiling and Installing PHP 5 on Mac OS X Leopard or Snow Leopard](http://www.malisphoto.com/tips/php-on-os-x.html)
 
