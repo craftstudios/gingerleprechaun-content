@@ -1,6 +1,6 @@
 date: Date: Date: 2010-09-29 17:05:07 +1200
 read more: Read more on serving multiple versions of PHP
-summary: Recently I got mighty peeved off at how clunky and bloated my hosts webmail system was. And why should I be paying them for hosted email when I can get Google-class email hosting for free with Google Apps?
+summary: I need to be able to test sites in PHP5.2 _and_ PHP5.3. You can only have one version of PHP loaded as an apache module, all the others have to use `php-cgi`
 
 # Serving multiple versions of PHP with Apache on OSX
 =====================================================
@@ -8,6 +8,8 @@ summary: Recently I got mighty peeved off at how clunky and bloated my hosts web
 I need to be able to test sites in PHP5.2 _and_ PHP5.3. You can only have one version of PHP loaded as an apache module, all the others have to use `php-cgi`
 
 I already had PHP5.3 installed as an apache module on my development system (Snow Leopard), so I built and added 5.2 using cgi as follows.
+
+__The HTTP Authentication hooks in PHP are only available when it is running as an Apache module and is hence not available in the CGI version.__
 
 > I tried installing the [entropy package](http://www.entropy.ch/software/macosx/php/) in it's own directory but it doesn't come with php-cgi, I couldn't get it to work, and it wrote a symlink into my apache `conf/other` directory which caused SegFaults in apache whenever I tried to unload the PHP module. Moral of the story? If in doubt - use the source.
 
@@ -21,9 +23,18 @@ First, get the source for the [version PHP you need](http://php.net/downloads.ph
 
 You’ll now have a directory called /php-5.2.14.
 
-As you add more modules to your installation, you’ll also need more flags to the ./configure command. This is what I used:
+As you add more modules to your installation, you’ll also need more flags to the ./configure command. This is what I needed:
 
-	> ./configure --prefix=/usr/local/php5.2.14 --with-config-file-path=/usr/local/php5.2.14 --with-mysqli=/usr/local/mysql/bin/mysql_config --with-mysql=/usr/local/mysql --with-curl --enable-cli --enable-fastcgi --enable-discard-path --enable-force-cgi-redirect
+	- curl
+	- cli
+	- fastcgi
+	- zlib
+	- mysql
+	- pdo-mysql driver	
+
+And this is the command I used:
+
+	> ./configure --prefix=/usr/local/php5.2.14 --with-config-file-path=/usr/local/php5.2.14 --with-curl --enable-cli --enable-fastcgi --enable-force-cgi-redirect --enable-discard-path --with-mysqli=/usr/local/mysql/bin/mysql_config --with-mysql=/usr/local/mysql --with-mysql-sock=/var/mysql --with-zlib-dir=/usr --with-pdo-mysql=/usr/local/mysql/bin/mysql_config
 
 Note the `--prefix` flag installs php into it's own directory leaving your existing install untouched. Don't use the `--with-apxs` flag - we don't want to install as an apache module.
 
@@ -96,4 +107,5 @@ Now you can choose which sites run on PHP5.2 or PHP5.3 simply by modifying their
 > [PHP on Mac OS X](http://developer.apple.com/internet/opensource/php.html)  
 > [Multiple PHP versions with Apache using FastCGI on OS X](http://cuadradevelopment.com/blog/26/multiple-php-versions-with-apache-using-fastcgi-on-os-x/)  
 > [Running multiple php versions on a single Apache install](http://gggeek.altervista.org/2007/07/21/running-multiple-php-versions-on-a-single-apache-install/)
+http://www.malisphoto.com/tips/php-on-os-x.html#Anchor-Introduction
 
