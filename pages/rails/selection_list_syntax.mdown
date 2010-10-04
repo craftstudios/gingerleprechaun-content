@@ -4,7 +4,6 @@ read more: Read more
 summary: I don't think the explanation of 'selection lists' in Agile Web Development with Rails(1st ed) is very clear.
 
 # Selection List syntax
-=======================
 
 I don't think the explanation of 'selection lists' in Agile Web Development with Rails(1st ed) is very clear. It mentions:
 
