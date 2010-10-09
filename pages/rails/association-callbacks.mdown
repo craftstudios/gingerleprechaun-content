@@ -1,6 +1,6 @@
 date: Date: 2007-08-08 15:34:08 +1200
 categories: rails
-read more: Read more about deploying rails on windows
+read more: Read more about the callbacks `before_add`, `after_add`, `before_remove` and `after_remove`
 summary: Similar to the normal callbacks that hook into the lifecycle of an Active Record object, you can also define callbacks that get trigged when you add an object to or remove an object from a association collection.
 
 
