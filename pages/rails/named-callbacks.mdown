@@ -6,7 +6,7 @@ summary: Coming from a Java background I often find myself wanting to override c
 # Named Callbacks
 =================
 
-Coming from a Java background I often find myself wanting to override constructors and other hooks. I should really pay more attention to the [documentation](http://www.fishpond.co.nz/product_info.php?ref=2324&id=9781934356166&affiliate_banner_id=1).
+Coming from a Java background I often find myself wanting to override constructors and other hooks. I should really pay more attention to the [documentation](http://www.pragmaticprogrammer.com/titles/rails/). #fishpond!!
 
 Instead of:
 
@@ -28,5 +28,5 @@ Do:
 
 Using named callbacks better conveys your intention, making your code more readable.
 
-> References:  
-> [RailsConf Recap: Named Callbacks](http://www.therailsway.com/2007/6/7/railsconf-recap-named-callbacks)
+References:
+[RailsConf Recap: Named Callbacks](http://www.therailsway.com/2007/6/7/railsconf-recap-named-callbacks)

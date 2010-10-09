@@ -4,6 +4,7 @@ read more: Read more
 summary: Do not write your own initialiser to instantiate the object.
 
 # Active Record Constructors
+============================
 
 Do not write your own initialiser to instantiate the object. e.g:
 
