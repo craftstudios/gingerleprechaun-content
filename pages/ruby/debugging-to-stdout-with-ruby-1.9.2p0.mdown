@@ -1,7 +1,7 @@
 date: 2010-10-10 15:03:30 +1200
 categories: ruby, sysadmin
 read more: Read more on my horrendous experience trying to get ruby to write to stdout
-summary: Debugging to stdout with Ruby 1.9.2p0
+summary: Turns out with Ruby 1.9.2 I needed to do `$stdout.flush` after every `puts`, or do `$stdout.sync = true` which _should_ be the default behaviour. This is not an issue in other versions of Ruby.
 
 # Debugging to stdout with Ruby 1.9.2p0
 
