@@ -1,11 +1,11 @@
 date: 2010-10-17 23:34:52 +1200
 categories: nesta
 read more: Read more on passenger not finding gems
-summary: It's worth noting for the newbies that nesta uses bundler, so you need to explicitly add gems to your `Gemfile` or you won't be able to require them.
+summary: It's worth noting for the newbies that nesta uses [bundler](http://gembundler.com/), so you need to explicitly add gems to your `Gemfile` or you won't be able to require them.
 
 # Adding additional gems to nesta
 
-It's worth noting for the newbies that nesta uses bundler, so you need to explicitly add gems to your `Gemfile` or you won't be able to require them. I was getting
+It's worth noting for the newbies that nesta uses [bundler](http://gembundler.com/), so you need to explicitly add gems to your `Gemfile` or you won't be able to require them. I was getting
 
 	no such file to load --
 	
