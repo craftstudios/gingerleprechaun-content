@@ -7,25 +7,24 @@ summary: Debugging to stdout with Ruby 1.9.2p0
 
 For the life of me I could not figure out why the most simple of simplest tasks to write `foo` to a file would not work using the following:
 
-  log = File.new("help.log", "a+")
-  $stdout.reopen(log)
+	:::ruby
+	log = File.new("help.log", "a+")
+	$stdout.reopen(log)
 
-  require "sinatra"
+	require "sinatra"
 
-  helpers do
-    def set_common_variables
-      puts "more log output"
-    end
-  end
+	helpers do
+	  def set_common_variables
+	    puts "more log output"
+	  end
+	end
 
-  get "/" do
-    set_common_variables
+	get "/" do
+	  set_common_variables
 
-    puts "some log output"
-  
-    "browser output"
-  end
-  
-Turns out with this version of Ruby I needed to do `$stdout.flush` after every `puts`, or do `$stdout.sync = true` which _should_ be the default behaviour. Of course this is not an issue in other versions of Ruby.
+	  puts "some log output"
 
-Don't be a plonker and install 1.9.2p0 as your system Ruby :-S 
+	  "browser output"
+	end
+
+Turns out with Ruby 1.9.2 I needed to do `$stdout.flush` after every `puts`, or do `$stdout.sync = true` which _should_ be the default behaviour. This is not an issue in other versions of Ruby.

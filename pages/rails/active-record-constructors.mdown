@@ -4,10 +4,10 @@ read more: Read more
 summary: Do not write your own initialiser to instantiate the object.
 
 # Active Record Constructors
-============================
 
 Do not write your own initialiser to instantiate the object. e.g:
 
+	:::ruby
 	class MyClass < ActiveRecord::Base
 	  def initialize(params)
 	    @params = params
@@ -16,11 +16,13 @@ Do not write your own initialiser to instantiate the object. e.g:
 
 Instead do this:
 
+	:::ruby
 	my_object = MyClass.new(:params => params)
 	my_object.save
 
 Or this:
 
+	:::ruby
 	MyClass.create :params => params
 
 The above will automatically save the record to the DB.
