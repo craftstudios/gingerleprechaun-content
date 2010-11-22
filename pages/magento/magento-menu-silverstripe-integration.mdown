@@ -1,0 +1,48 @@
+date: 2010-11-22 13:44:22 +1200
+categories: magento
+read more: Read more about Magento Integration
+summary: test
+
+# Integrate Magento category menu with Silverstripe
+
+In my case I'm integrating with Silverstripe, but you could adapt (the first part) just as easily be any other CMS or your own PHP scripts
+
+
+## Initialse Magento class
+
+
+## Magento Database Models
+
+The best way to access and manipulate data in Magento is by using the provided objects and their associated functionality..
+For example, you can get a Magento category model like this:
+
+	$model_category = Mage::getModel('catalog/category');
+
+With your category model you now retrieve data
+e.g. get all child categories of category ID 2 and echo the name
+
+	$model_category = Mage::getModel('catalog/category');
+	foreach ($model_category->getCategories($id=2) as $category) {
+		echo $category->getName();
+	}
+
+## Magento Helper Classes
+
+Magento has helper classes which are pretty handy also.
+For example, you can get a Magento category helper like this:
+
+	$helper = Mage::helper('catalog/category');
+
+Your helper will have a bunch of methods defined for performing common tasks.
+For example, you can get all your stores top level categories as follows:
+
+	$helper = Mage::helper('catalog/category');
+	foreach ($helper->getStoreCategories() as $category) {
+		echo $category->getName();
+	}
+
+Check this file to see what methods are available in the catalog category helper:
+magento/app/code/core/Mage/Catalog/Helper/Category.php
+
+Ref
+http://www.sycha.com/magento-database-models-helpers-raw-sql-queries

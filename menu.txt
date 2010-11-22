@@ -2,4 +2,5 @@ nesta
 ruby
 rails
 osx
+magento
 sysadmin
