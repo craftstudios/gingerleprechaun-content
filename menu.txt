@@ -3,4 +3,5 @@ ruby
 rails
 osx
 magento
+silverstripe
 sysadmin
