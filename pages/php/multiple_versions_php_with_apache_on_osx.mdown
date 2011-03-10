@@ -1,9 +1,10 @@
-date: Date: Date: 2010-09-29 17:05:07 +1200
+date: 2010-09-29 17:05:07 +1200
+categories: php, osx
 read more: Read more on serving multiple versions of PHP
 summary: I need to be able to test sites in PHP5.2 _and_ PHP5.3. You can only have one version of PHP loaded as an apache module, all the others have to use `php-cgi`
 
+
 # Serving multiple versions of PHP with Apache on OSX
-=====================================================
 
 I need to be able to test sites in PHP5.2 _and_ PHP5.3. You can only have one version of PHP loaded as an apache module, all the others have to use `php-cgi`
 
